@@ -21,7 +21,9 @@
   const AUTOPLAY_INTERVAL = 5000; // мс между слайдами
   let wasAutoplayBeforeVideo = false;
   const VIDEO_SLIDE_INDEX = 4; // нумерация с 0, это 5-й слайд
+  // Local video element (slide 5)
   const videoEl = document.getElementById('videoSlide5');
+  const videoUnlockBtn = document.getElementById('videoUnlock');
 
   // Инициализируем точки
   for(let i=0;i<total;i++){
@@ -120,45 +122,44 @@
 
   // ВИДЕО НА СЛАЙДЕ 5
   function handleVideoSlideActivation(){
-    if(!videoEl) return;
     if(index === VIDEO_SLIDE_INDEX){
-      // Зафиксировать состояние автоплей, остановить автолистывание, спрятать прогресс
       wasAutoplayBeforeVideo = autoplay;
       if(autoplay){ stopAutoplay(); }
       progressBar.style.width = '0%';
-
-      // Автовоспроизведение: согласно политикам, видео уже помечено muted playsinline
-      // Попробуем запустить, при ошибке просто оставим управление пользователю
-      const tryPlay = async () => {
-        try {
-          await videoEl.play();
-        } catch (e) {
-          // Браузер заблокировал автоплей — включим звук по клику или пользователю нужно нажать Play
-          console.warn('Autoplay blocked:', e);
-        }
-      };
-      // Перемотать на начало, если повторный заход на слайд
-      if(Math.abs(videoEl.currentTime - 0) > 0.05){
-        try{ videoEl.currentTime = 0; }catch{}
-      }
-      tryPlay();
-    }else{
-      // Выходим с видеослайда — остановить видео и восстановить автоплей при необходимости
-      if(!videoEl.paused){
+      if(videoEl){
+        // подготовка и попытка автозапуска со звуком
         try{ videoEl.pause(); }catch{}
+        try{ videoEl.currentTime = 0; }catch{}
+        try{ videoEl.muted = false; videoEl.volume = 1.0; }catch{}
+        try{
+          const p = videoEl.play();
+          if(p && typeof p.then === 'function'){
+            p.then(()=>{ if(videoUnlockBtn) videoUnlockBtn.hidden = true; })
+             .catch(()=>{ if(videoUnlockBtn) videoUnlockBtn.hidden = false; });
+          }
+        }catch{ if(videoUnlockBtn) videoUnlockBtn.hidden = false; }
       }
-      if(wasAutoplayBeforeVideo){
-        startAutoplay();
-        wasAutoplayBeforeVideo = false;
-      }
+    }else{
+      if(videoEl){ try{ videoEl.pause(); }catch{} }
+      if(videoUnlockBtn){ videoUnlockBtn.hidden = true; }
+      if(wasAutoplayBeforeVideo){ startAutoplay(); wasAutoplayBeforeVideo = false; }
     }
   }
 
   if(videoEl){
-    // Когда видео закончилось — перейти к следующему слайду
-    videoEl.addEventListener('ended', ()=>{
-      // Принудительный переход вперёд, затем (если нужно) вернётся автоплей
-      goTo(index + 1);
+    // Завершение местного видео — следующий слайд
+    videoEl.addEventListener('ended', ()=>{ next(); });
+  }
+
+  if(videoUnlockBtn && videoEl){
+    videoUnlockBtn.addEventListener('click', async ()=>{
+      try{ videoEl.muted = false; videoEl.volume = 1.0; }catch{}
+      try{
+        await videoEl.play();
+        videoUnlockBtn.hidden = true;
+      }catch(e){
+        console.warn('Не удалось запустить видео по клику', e);
+      }
     });
   }
 
