@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Презентация — 7 слайдов</title>
+    <meta name="description" content="Лёгкая презентация на 7 слайдов с навигацией и полноэкранным режимом" />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="script.js"></script>
+  </head>
+  <body>
+    <div class="presentation" id="presentation" aria-label="Презентация из 7 слайдов">
+      <div class="slides" id="slides" role="list">
+        <!--
+          ВАЖНО: Замените значение атрибута src у каждого <img> на путь к вашему файлу изображения.
+          Пример: src="images/slide1.jpg"
+        -->
+        
+        <div class="slide active" role="listitem" data-index="0" aria-hidden="false">
+          <img class="slide-image"
+               src="images/image1.png"
+               alt="Слайд 1" />
+        </div>
+
+        <div class="slide" role="listitem" data-index="1" aria-hidden="true">
+          <img class="slide-image"
+               src="images/image2.png"
+               alt="Слайд 2" />
+        </div>
+
+        <div class="slide" role="listitem" data-index="2" aria-hidden="true">
+          <img class="slide-image"
+               src="images/image3.png"
+               alt="Слайд 3" />
+        </div>
+
+        <div class="slide" role="listitem" data-index="3" aria-hidden="true">
+          <img class="slide-image"
+               src="images/image4.png"
+               alt="Слайд 4" />
+        </div>
+
+        <div class="slide" role="listitem" data-index="4" aria-hidden="true">
+          <!-- СЛАЙД 5: Сначала фото, поверх — окно с видео -->
+          <div class="media-stage">
+            <img class="slide-image"
+                 src="images/image5.png"
+                 alt="Слайд 5 — изображение" />
+            <div class="video-window" aria-label="Видео демонстрация">
+              <video id="videoSlide5" class="slide-media" playsinline muted controls preload="metadata"
+                     src="https://youtu.be/PU69q4Xc-IY?si=UdHObpD94ZylJsO3"
+                     poster="">
+                Ваш браузер не поддерживает видео.
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide" role="listitem" data-index="5" aria-hidden="true">
+          <img class="slide-image"
+               src="images/image6.png"
+               alt="Слайд 6" />
+        </div>
+
+        <div class="slide" role="listitem" data-index="6" aria-hidden="true">
+          <img class="slide-image"
+               src="images/image7.png"
+               alt="Слайд 7" />
+        </div>
+      </div>
+
+      <div class="ui" aria-label="Управление презентацией">
+        <div class="top-bar">
+          <button class="btn" id="btnFullscreen" title="Полноэкранный режим (F)" aria-label="Полноэкранный режим">
+            <span class="icon" aria-hidden="true">⛶</span>
+          </button>
+        </div>
+        <div class="bottom-bar">
+          <div class="left-controls">
+            <button class="btn" id="btnPrev" title="Назад (←)" aria-label="Предыдущий слайд">⟵</button>
+            <button class="btn" id="btnNext" title="Вперёд (→)" aria-label="Следующий слайд">⟶</button>
+            <button class="btn" id="btnPlay" title="Автопрокрутка (Space)" aria-label="Автопрокрутка">▶</button>
+          </div>
+          <div class="center-controls">
+            <div class="dots" id="dots" aria-label="Переход по слайдам" role="tablist" aria-controls="slides"></div>
+          </div>
+          <div class="right-controls">
+            <div class="counter" id="counter" aria-live="polite">1 / 7</div>
+          </div>
+        </div>
+        <div class="progress" aria-hidden="true">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
